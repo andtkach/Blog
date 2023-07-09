@@ -12,3 +12,5 @@ fix all warnings
 
 
 SuperAdmin and Admin cahnge to Moderator and Admin
+
+rename MessageDescription in display messages code
