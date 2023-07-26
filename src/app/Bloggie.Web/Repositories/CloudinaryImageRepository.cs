@@ -2,12 +2,12 @@
 
 namespace Bloggie.Web.Repositories
 {
-    public class ImageRepositoryCloudinary : IImageRepository
+    public class CloudinaryImageRepository : IImageRepository
     {
 
         private readonly Account account;
 
-        public ImageRepositoryCloudinary(IConfiguration configuration)
+        public CloudinaryImageRepository(IConfiguration configuration)
         {
             account = new Account(configuration.GetSection("Cloudinary")["CloudName"],
                 configuration.GetSection("Cloudinary")["ApiKey"],
