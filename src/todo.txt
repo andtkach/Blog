@@ -16,3 +16,5 @@ SuperAdmin and Admin cahnge to Moderator and Admin
 rename MessageDescription in display messages code.  maybe done already
 
 add http client from here https://youtu.be/g-JGay_lnWI
+
+Edit blogpost image seems to not work
