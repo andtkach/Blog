@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
+using Blog.Web.BackgroundServices;
 using Blog.Web.Enums;
 using Blog.Web.Models.Domain;
 using Blog.Web.Models.ViewModels;
@@ -14,6 +15,7 @@ namespace Blog.Web.Pages.Admin.Blogs
     public class AddModel : PageModel
     {
         private readonly IArticleRepository articleRepository;
+        private readonly ArticleCacheProcessingChannel _contentCacheProcessingChannel;
 
         [BindProperty]
         public AddArticle AddArticleRequest { get; set; } = null!;
@@ -22,9 +24,10 @@ namespace Blog.Web.Pages.Admin.Blogs
         [Required]
         public string Tags { get; set; } = null!;
 
-        public AddModel(IArticleRepository articleRepository)
+        public AddModel(IArticleRepository articleRepository, ArticleCacheProcessingChannel contentCacheProcessingChannel)
         {
             this.articleRepository = articleRepository;
+            this._contentCacheProcessingChannel = contentCacheProcessingChannel;
         }
 
         public void OnGet()
@@ -53,6 +56,8 @@ namespace Blog.Web.Pages.Admin.Blogs
                 };
 
                 await articleRepository.AddAsync(article);
+
+                await this._contentCacheProcessingChannel.ProcessArticleAsync(article.Id.ToString());
 
                 var notification = new Notification
                 {

@@ -14,8 +14,10 @@
       "launchBrowser": true,
       "applicationUrl": "https://localhost:7272;http://localhost:7271",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ContentCache:CacheSeconds": "100",
+        "ContentCache:UseCache": "true"
+      }      
     }
   }
 }

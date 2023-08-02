@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
+using Blog.Web.BackgroundServices;
 using Blog.Web.Enums;
 using Blog.Web.Models.Domain;
 using Blog.Web.Models.ViewModels;
@@ -15,21 +16,21 @@ namespace Blog.Web.Pages.Admin.Blogs
     {
         private readonly IArticleRepository articleRepository;
         private readonly ILogger<EditModel> logger;
+        private readonly ArticleCacheProcessingChannel _contentCacheProcessingChannel;
 
         [BindProperty]
         public EditArticleRequest ArticleRequest { get; set; } = null!;
 
         [BindProperty]
-        public IFormFile FeaturedImage { get; set; } = null!;
-
-        [BindProperty]
         [Required]
         public string Tags { get; set; } = null!;
 
-        public EditModel(IArticleRepository articleRepository, ILogger<EditModel> logger)
+        public EditModel(IArticleRepository articleRepository, ILogger<EditModel> logger,
+            ArticleCacheProcessingChannel contentCacheProcessingChannel)
         {
             this.articleRepository = articleRepository;
             this.logger = logger;
+            this._contentCacheProcessingChannel = contentCacheProcessingChannel;
         }
 
         public async Task OnGet(Guid id)
@@ -81,6 +82,7 @@ namespace Blog.Web.Pages.Admin.Blogs
 
 
                     await articleRepository.UpdateAsync(article);
+                    await this._contentCacheProcessingChannel.ProcessArticleAsync(article.Id.ToString());
 
                     ViewData["Notification"] = new Notification
                     {
@@ -109,6 +111,7 @@ namespace Blog.Web.Pages.Admin.Blogs
             var deleted = await articleRepository.DeleteAsync(ArticleRequest.Id);
             if (deleted)
             {
+                await this._contentCacheProcessingChannel.ProcessArticleAsync(ArticleRequest.Id.ToString());
                 var notification = new Notification
                 {
                     Type = NotificationType.Success,

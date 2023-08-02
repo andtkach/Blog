@@ -1,6 +1,4 @@
 use API somehow
 add proper http client from PS course
-
 add http client from here https://youtu.be/g-JGay_lnWI
 
-Edit blogpost image seems to not work

@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Blog.Web.Models.Domain;
 using Blog.Web.Models.ViewModels;
 using Blog.Web.Repositories;
+using Blog.Web.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,6 +12,7 @@ namespace Blog.Web.Pages.Blog
     public class DetailsModel : PageModel
     {
         private readonly IArticleRepository articleRepository;
+        private readonly IArticleService articleService;
         private readonly ILikeRepository likeRepository;
         private readonly SignInManager<IdentityUser> signInManager;
         private readonly UserManager<IdentityUser> userManager;
@@ -34,12 +36,14 @@ namespace Blog.Web.Pages.Blog
 
 
         public DetailsModel(IArticleRepository articleRepository,
+            IArticleService articleService,
             ILikeRepository likeRepository,
             SignInManager<IdentityUser> signInManager,
             UserManager<IdentityUser> userManager,
             ICommentRepository commentRepository)
         {
             this.articleRepository = articleRepository;
+            this.articleService = articleService;
             this.likeRepository = likeRepository;
             this.signInManager = signInManager;
             this.userManager = userManager;
@@ -111,7 +115,7 @@ namespace Blog.Web.Pages.Blog
 
         private async Task GetBlog(string urlHandle)
         {
-            var article = await articleRepository.GetAsync(urlHandle);
+            var article = await articleService.GetAsync(urlHandle);
             
             if (article != null)
             {
