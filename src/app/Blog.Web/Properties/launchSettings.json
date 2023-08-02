@@ -16,7 +16,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ContentCache:CacheSeconds": "100",
-        "ContentCache:UseCache": "true"
+        "ContentCache:UseCache": "false"
       }      
     }
   }
