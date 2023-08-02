@@ -1,22 +1,6 @@
-update to .net7
-update all libs
-
-rename Bloggie to Blog
-
 use API somehow
 add proper http client from PS course
-
-add docker to all projects and host database in docker
-
-fix all warnings
-
-
-SuperAdmin and Admin cahnge to Moderator and Admin
-
-rename MessageDescription in display messages code.  maybe done already
 
 add http client from here https://youtu.be/g-JGay_lnWI
 
 Edit blogpost image seems to not work
-
-BlogPost -> Article
