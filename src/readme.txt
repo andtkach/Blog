@@ -8,3 +8,9 @@ Add-Migration InitialCreate -Context AuthDbContext -OutputDir Migrations\AuthMig
 Update-Database -Context BlogDbContext
 Update-Database -Context AuthDbContext
 
+
+------Docker-------
+cd app
+docker build -f Blog.Web/Dockerfile -t andreytkach/blog .
+
+docker run -p 7001:80 -e "ASPNETCORE_ENVIRONMENT=Production" -e "ContentCache__UseCache=true" --name my-blog andreytkach/blog 
