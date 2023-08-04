@@ -2,9 +2,10 @@
 {
     public class About
     {
-        public string Environment { get; set; }
-        public string Cache { get; set; }
-        public string ConnectionAuth { get; set; }
-        public string ConnectionBlog { get; set; }
+        public string Environment { get; set; } = null!;
+        public string UseCache { get; set; } = null!;
+        public string CacheSeconds { get; set; } = null!;
+        public string ConnectionAuth { get; set; } = null!;
+        public string ConnectionBlog { get; set; } = null!;
     }
 }

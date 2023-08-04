@@ -15,7 +15,7 @@ namespace Blog.Web.Pages.Admin.Blogs
     public class AddModel : PageModel
     {
         private readonly IArticleRepository articleRepository;
-        private readonly ArticleCacheProcessingChannel _contentCacheProcessingChannel;
+        private readonly ArticleCacheProcessingChannel _articleCacheProcessingChannel;
 
         [BindProperty]
         public AddArticle AddArticleRequest { get; set; } = null!;
@@ -24,10 +24,10 @@ namespace Blog.Web.Pages.Admin.Blogs
         [Required]
         public string Tags { get; set; } = null!;
 
-        public AddModel(IArticleRepository articleRepository, ArticleCacheProcessingChannel contentCacheProcessingChannel)
+        public AddModel(IArticleRepository articleRepository, ArticleCacheProcessingChannel articleCacheProcessingChannel)
         {
             this.articleRepository = articleRepository;
-            this._contentCacheProcessingChannel = contentCacheProcessingChannel;
+            this._articleCacheProcessingChannel = articleCacheProcessingChannel;
         }
 
         public void OnGet()
@@ -57,7 +57,7 @@ namespace Blog.Web.Pages.Admin.Blogs
 
                 await articleRepository.AddAsync(article);
 
-                await this._contentCacheProcessingChannel.ProcessArticleAsync(article.Id.ToString());
+                await this._articleCacheProcessingChannel.ProcessArticleAsync(article.Id.ToString());
 
                 var notification = new Notification
                 {

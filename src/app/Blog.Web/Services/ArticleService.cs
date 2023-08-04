@@ -10,22 +10,22 @@ namespace Blog.Web.Services
     {
         private readonly IArticleRepository articleRepository;
         private readonly ILogger<ArticleService> logger;
-        private readonly IContentCache contentCache;
+        private readonly IArticleCache articleCache;
 
         public ArticleService(IArticleRepository articleRepository, ILogger<ArticleService> logger,
-            IContentCache contentCache)
+            IArticleCache articleCache)
         {
             this.articleRepository = articleRepository;
             this.logger = logger;
-            this.contentCache = contentCache;
+            this.articleCache = articleCache;
         }
 
         public async Task<IEnumerable<Article>> GetAllAsync()
         {
 
-            if (contentCache.UseCache)
+            if (articleCache.UseCache)
             {
-                var cachedData = this.contentCache.Get<IEnumerable<Article>>(Constants.AllArticlesContentCachePrefix);
+                var cachedData = this.articleCache.Get<IEnumerable<Article>>(Constants.AllArticlesCachePrefix);
                 if (cachedData != null)
                 {
                     logger.LogInformation("Get articles from cache");
@@ -36,9 +36,9 @@ namespace Blog.Web.Services
             var result = await articleRepository.GetAllAsync();
             logger.LogInformation("Get articles from database");
 
-            if (contentCache.UseCache)
+            if (articleCache.UseCache)
             {
-                this.contentCache.Add(Constants.AllArticlesContentCachePrefix, result, this.contentCache.ContentCacheSeconds);
+                this.articleCache.Add(Constants.AllArticlesCachePrefix, result, this.articleCache.CacheSeconds);
             }
 
             return result;
@@ -46,9 +46,9 @@ namespace Blog.Web.Services
 
         public async Task<Article?> GetAsync(string urlHandle)
         {
-            if (contentCache.UseCache)
+            if (articleCache.UseCache)
             {
-                var cachedData = this.contentCache.Get<Article>($"{Constants.OneArticleContentCachePrefix}_{urlHandle}");
+                var cachedData = this.articleCache.Get<Article>($"{Constants.OneArticleCachePrefix}_{urlHandle}");
                 if (cachedData != null)
                 {
                     logger.LogInformation("Get article from cache");
@@ -59,9 +59,9 @@ namespace Blog.Web.Services
             var result = await articleRepository.GetAsync(urlHandle);
             logger.LogInformation("Get article from database");
 
-            if (contentCache.UseCache)
+            if (articleCache.UseCache)
             {
-                this.contentCache.Add($"{Constants.OneArticleContentCachePrefix}_{urlHandle}", result, this.contentCache.ContentCacheSeconds);
+                this.articleCache.Add($"{Constants.OneArticleCachePrefix}_{urlHandle}", result, this.articleCache.CacheSeconds);
             }
 
             return result;

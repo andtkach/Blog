@@ -5,8 +5,8 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ContentCache:CacheSeconds": "100",
-        "ContentCache:UseCache": "false"
+        "ArticleCache:CacheSeconds": "100",
+        "ArticleCache:UseCache": "true"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7272;http://localhost:7271"

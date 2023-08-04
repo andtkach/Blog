@@ -3,18 +3,18 @@ using Microsoft.VisualBasic;
 
 namespace Blog.Web.Cache
 {
-    public class MemoryContentCache : IContentCache
+    public class MemoryArticleCache : IArticleCache
     {
         private readonly IMemoryCache memoryCache;
 
-        public MemoryContentCache(IMemoryCache memoryCache)
+        public MemoryArticleCache(IMemoryCache memoryCache)
         {
             this.memoryCache = memoryCache;
-            this.ContentCacheSeconds = 60;
+            this.CacheSeconds = 60;
         }
 
         public bool UseCache { get; set; }
-        public int ContentCacheSeconds { get; set; }
+        public int CacheSeconds { get; set; }
 
         public void Add<T>(string key, T item, int seconds = 60)
         {

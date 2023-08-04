@@ -1,3 +1,4 @@
+using Blog.Web.Cache;
 using Blog.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,13 +10,15 @@ namespace Blog.Web.Pages
     public class AboutModel : PageModel
     {
         private readonly IConfiguration configuration;
+        private readonly IArticleCache articleCache;
 
         [BindProperty]
         public About About { get; set; } = null!;
 
-        public AboutModel(IConfiguration configuration)
+        public AboutModel(IConfiguration configuration, IArticleCache articleCache)
         {
             this.configuration = configuration;
+            this.articleCache = articleCache;
         }
 
         public void OnGet()
@@ -25,8 +28,10 @@ namespace Blog.Web.Pages
                 Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")!,
                 ConnectionBlog = configuration.GetConnectionString("BlogDbConnectionString")!,
                 ConnectionAuth = configuration.GetConnectionString("AuthDbConnectionString")!,
-                Cache = Environment.GetEnvironmentVariable("ContentCache:UseCache")!
+                UseCache = articleCache.UseCache.ToString(),
+                CacheSeconds = articleCache.CacheSeconds.ToString()
             };
+
             About = result;
         }
     }

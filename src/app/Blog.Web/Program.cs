@@ -45,29 +45,29 @@ builder.Services.AddHostedService<TimeCacheService>();
 builder.Services.AddHostedService<RequestCacheService>();
 
 builder.Services.AddMemoryCache();
-var cacheSingleton = new MemoryContentCache(new MemoryCache(new MemoryCacheOptions()));
-cacheSingleton.ContentCacheSeconds = 60;
-cacheSingleton.UseCache = false;
+var cacheSingleton = new MemoryArticleCache(new MemoryCache(new MemoryCacheOptions()));
+cacheSingleton.CacheSeconds = 600;
+cacheSingleton.UseCache = true;
 
-var contentCacheSeconds = Environment.GetEnvironmentVariable("ContentCache:CacheSeconds");
-if (!string.IsNullOrEmpty(contentCacheSeconds))
+var articleCacheSeconds = Environment.GetEnvironmentVariable("ArticleCache:CacheSeconds");
+if (!string.IsNullOrEmpty(articleCacheSeconds))
 {
-    if (int.TryParse(contentCacheSeconds, out var value))
+    if (int.TryParse(articleCacheSeconds, out var value))
     {
-        cacheSingleton.ContentCacheSeconds = value;
+        cacheSingleton.CacheSeconds = value;
     }
 }
 
-var contentUseCache = Environment.GetEnvironmentVariable("ContentCache:UseCache");
-if (!string.IsNullOrEmpty(contentUseCache))
+var articleUseCache = Environment.GetEnvironmentVariable("ArticleCache:UseCache");
+if (!string.IsNullOrEmpty(articleUseCache))
 {
-    if (bool.TryParse(contentUseCache, out var value))
+    if (bool.TryParse(articleUseCache, out var value))
     {
         cacheSingleton.UseCache = value;
     }
 }
 
-builder.Services.AddSingleton<IContentCache>(cacheSingleton);
+builder.Services.AddSingleton<IArticleCache>(cacheSingleton);
 
 builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 builder.Services.AddScoped<IImageRepository, CloudinaryImageRepository>();

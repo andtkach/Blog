@@ -8,21 +8,21 @@ namespace Blog.Web.BackgroundServices
     {
         private readonly ILogger<RequestCacheService> _logger;
         private readonly IServiceProvider _serviceProvider;
-        private readonly ArticleCacheProcessingChannel _contentCacheProcessingChannel;
+        private readonly ArticleCacheProcessingChannel _cacheProcessingChannel;
 
         public RequestCacheService(ILogger<RequestCacheService> logger, IServiceProvider serviceProvider,
-            ArticleCacheProcessingChannel contentCacheProcessingChannel)
+            ArticleCacheProcessingChannel cacheProcessingChannel)
         {
             this._logger = logger;
             this._serviceProvider = serviceProvider;
-            this._contentCacheProcessingChannel = contentCacheProcessingChannel;
+            this._cacheProcessingChannel = cacheProcessingChannel;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation($"RequestCacheService started");
 
-            await foreach (var articleId in this._contentCacheProcessingChannel.ReadAllAsync(stoppingToken))
+            await foreach (var articleId in this._cacheProcessingChannel.ReadAllAsync(stoppingToken))
             {
                 try
                 {
@@ -31,11 +31,11 @@ namespace Blog.Web.BackgroundServices
                     using var scope = _serviceProvider.CreateScope();
 
                     var articleRepository = scope.ServiceProvider.GetRequiredService<IArticleRepository>();
-                    var cacheService = scope.ServiceProvider.GetRequiredService<IContentCache>();
+                    var cacheService = scope.ServiceProvider.GetRequiredService<IArticleCache>();
                     
                     if (!cacheService.UseCache)
                     {
-                        _logger.LogInformation("API configured to not use cache, so exit. ContentCache:UseCache");
+                        _logger.LogInformation("API configured to not use cache, so exit. ArticleCache:UseCache");
                         return;
                     }
 
@@ -44,14 +44,14 @@ namespace Blog.Web.BackgroundServices
 
                     foreach (var article in allArticles)
                     {
-                        string key = $"{Constants.OneArticleContentCachePrefix}_{article.UrlHandle}";
-                        cacheService.Add(key, article, cacheService.ContentCacheSeconds);
+                        string key = $"{Constants.OneArticleCachePrefix}_{article.UrlHandle}";
+                        cacheService.Add(key, article, cacheService.CacheSeconds);
                         _logger.LogInformation($"Cached article: {article.Id} with a key {key}");
                     }
 
                     if (allArticles.Any())
                     {
-                        cacheService.Add(Constants.AllArticlesContentCachePrefix, allArticles, cacheService.ContentCacheSeconds);
+                        cacheService.Add(Constants.AllArticlesCachePrefix, allArticles, cacheService.CacheSeconds);
                         _logger.LogInformation("All articles are cached.");
                     }
                 }

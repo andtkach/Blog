@@ -2,7 +2,7 @@
 {
     public static class Constants
     {
-        public const string AllArticlesContentCachePrefix = "AllArticles";
-        public const string OneArticleContentCachePrefix = "OneArticle";
+        public const string AllArticlesCachePrefix = "AllArticles";
+        public const string OneArticleCachePrefix = "OneArticle";
     }
 }

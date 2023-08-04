@@ -16,7 +16,7 @@ namespace Blog.Web.Pages.Admin.Blogs
     {
         private readonly IArticleRepository articleRepository;
         private readonly ILogger<EditModel> logger;
-        private readonly ArticleCacheProcessingChannel _contentCacheProcessingChannel;
+        private readonly ArticleCacheProcessingChannel _articleCacheProcessingChannel;
 
         [BindProperty]
         public EditArticleRequest ArticleRequest { get; set; } = null!;
@@ -26,11 +26,11 @@ namespace Blog.Web.Pages.Admin.Blogs
         public string Tags { get; set; } = null!;
 
         public EditModel(IArticleRepository articleRepository, ILogger<EditModel> logger,
-            ArticleCacheProcessingChannel contentCacheProcessingChannel)
+            ArticleCacheProcessingChannel articleCacheProcessingChannel)
         {
             this.articleRepository = articleRepository;
             this.logger = logger;
-            this._contentCacheProcessingChannel = contentCacheProcessingChannel;
+            this._articleCacheProcessingChannel = articleCacheProcessingChannel;
         }
 
         public async Task OnGet(Guid id)
@@ -82,7 +82,7 @@ namespace Blog.Web.Pages.Admin.Blogs
 
 
                     await articleRepository.UpdateAsync(article);
-                    await this._contentCacheProcessingChannel.ProcessArticleAsync(article.Id.ToString());
+                    await this._articleCacheProcessingChannel.ProcessArticleAsync(article.Id.ToString());
 
                     ViewData["Notification"] = new Notification
                     {
@@ -111,7 +111,7 @@ namespace Blog.Web.Pages.Admin.Blogs
             var deleted = await articleRepository.DeleteAsync(ArticleRequest.Id);
             if (deleted)
             {
-                await this._contentCacheProcessingChannel.ProcessArticleAsync(ArticleRequest.Id.ToString());
+                await this._articleCacheProcessingChannel.ProcessArticleAsync(ArticleRequest.Id.ToString());
                 var notification = new Notification
                 {
                     Type = NotificationType.Success,
